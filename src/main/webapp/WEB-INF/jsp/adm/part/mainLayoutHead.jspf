@@ -20,6 +20,11 @@
 					</a>
 				</li>
 				<li>
+					<a class="text-xl px-4 flex items-center h-full hover:underline" href="/adm/member/list">
+						<span>회원 관리</span>
+					</a>
+				</li>
+				<li>
 					<a class="text-xl px-4 flex items-center h-full hover:underline" href="/adm/board/list">
 						<span>게시판 관리</span>
 					</a>

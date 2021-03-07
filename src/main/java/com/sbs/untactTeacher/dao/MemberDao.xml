@@ -18,13 +18,15 @@
 		#{nickname},
 		cellphoneNo = #{cellphoneNo},
 		email = #{email},
-		authKey = CONCAT("authKey1__", UUID(), "__", RAND())
+		authKey =
+		CONCAT("authKey1__", UUID(), "__", RAND())
 	</insert>
 
 	<select id="getMember" resultType="Member">
 		SELECT *
 		FROM `member`
-		WHERE id = #{id}
+		WHERE id
+		= #{id}
 	</select>
 
 	<select id="getMemberByLoginId" resultType="Member">
@@ -32,7 +34,7 @@
 		FROM `member`
 		WHERE loginId = #{loginId}
 	</select>
-	
+
 	<select id="getMemberByAuthKey" resultType="Member">
 		SELECT *
 		FROM `member`
@@ -64,6 +66,31 @@
 		</set>
 		WHERE id = #{id}
 	</update>
+
+	<select id="getForPrintMembers" resultType="Member">
+		SELECT M.*
+		FROM `member` AS M
+		WHERE 1
+		<if test="searchKeywordType == 'name'">
+			AND M.name LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		<if test="searchKeywordType == 'nickname'">
+			AND M.`nickname` LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		<if test="searchKeywordType == 'nameAndNickname'">
+			AND (M.name LIKE CONCAT('%', #{searchKeyword}, '%') OR
+			M.nickname LIKE CONCAT('%', #{searchKeyword}, '%'))
+		</if>
+		<if test="searchKeywordType == 'loginId'">
+			AND M.loginId LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		ORDER BY M.id DESC
+		<if test="limitStart != null and limitTake != null">
+			LIMIT #{limitStart}, #{limitTake}
+		</if>
+	</select>
+
+
 
 </mapper>
 
