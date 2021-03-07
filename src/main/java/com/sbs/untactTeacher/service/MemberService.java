@@ -37,12 +37,8 @@ public class MemberService {
 		return new ResultData("S-1", "회원정보가 수정되었습니다.");
 	}
 
-	public boolean isAdmin(int actorId) {
-		return actorId == 1;
-	}
-
 	public boolean isAdmin(Member actor) {
-		return isAdmin(actor.getId());
+		return actor.getAuthLevel() == 7;
 	}
 
 	public Member getMemberByAuthKey(String authKey) {
