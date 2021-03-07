@@ -1,5 +1,6 @@
 package com.sbs.untactTeacher.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,13 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sbs.untactTeacher.dto.Article;
+import com.sbs.untactTeacher.dto.GenFile;
 import com.sbs.untactTeacher.dto.Member;
 import com.sbs.untactTeacher.dto.ResultData;
 import com.sbs.untactTeacher.service.MemberService;
 import com.sbs.untactTeacher.util.Util;
 
 @Controller
-public class AdmMemberController {
+public class AdmMemberController extends BaseController {
 	@Autowired
 	private MemberService memberService;
 
@@ -139,6 +142,23 @@ public class AdmMemberController {
 		redirectUrl = Util.ifEmpty(redirectUrl, "../home/main");
 
 		return Util.msgAndReplace(msg, redirectUrl);
+	}
+	
+	@RequestMapping("/adm/member/modify")
+	public String showModify(Integer id, HttpServletRequest req) {
+		if (id == null) {
+			return msgAndBack(req, "id를 입력해주세요.");
+		}
+
+		Member member = memberService.getForPrintMember(id);
+
+		req.setAttribute("member", member);
+
+		if (member == null) {
+			return msgAndBack(req, "존재하지 않는 회원번호 입니다.");
+		}
+
+		return "adm/member/modify";
 	}
 
 	@RequestMapping("/adm/member/doModify")

@@ -21,4 +21,6 @@ public interface MemberDao {
 	Member getMemberByAuthKey(@Param("authKey") String authKey);
 
 	List<Member> getForPrintMembers(Map<String, Object> param);
+
+	Member getForPrintMember(@Param("id") int id);
 }

@@ -28,6 +28,13 @@
 		WHERE id
 		= #{id}
 	</select>
+	
+	<select id="getForPrintMember" resultType="Member">
+		SELECT *
+		FROM `member`
+		WHERE id
+		= #{id}
+	</select>
 
 	<select id="getMemberByLoginId" resultType="Member">
 		SELECT *
