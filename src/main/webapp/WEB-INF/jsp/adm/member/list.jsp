@@ -6,6 +6,24 @@
 
 <section class="section-1">
 	<div class="bg-white shadow-md rounded container mx-auto p-8 mt-8">
+		<div class="flex">
+			<select class="py-2 select-auth-level">
+				<option value="">권한전체</option>
+				<option value="3">일반회원</option>
+				<option value="7">관리자</option>
+			</select>
+			<script>
+				if ( !param.authLevel ) {
+					param.authLevel = '';
+				}
+				
+				$('.section-1 .select-auth-level').val(param.authLevel);
+
+				$('.section-1 .select-auth-level').change(function() {
+					location.href = '?authLevel=' + this.value;
+				});
+			</script>
+		</div>
 		<div>
 			<c:forEach items="${members}" var="member">
 				<c:set var="detailUrl" value="detail?id=${member.id}" />
@@ -13,7 +31,7 @@
 					<a href="${detailUrl}" class="font-bold">NO. ${member.id}</a>
 					<a href="${detailUrl}" class="ml-2 font-light text-gray-600">${member.regDate}</a>
 					<div class="flex-grow"></div>
-					<a class="px-2 py-1 bg-gray-600 text-gray-100 font-bold rounded hover:bg-gray-500">${member.authLevelName}</a>
+					<a href="?authLevel=${member.authLevel}" class="cursor-pointer px-2 py-1 bg-${member.authLevelNameColor}-600 text-${member.authLevelNameColor}-100 font-bold rounded hover:bg-${member.authLevelNameColor}-500">${member.authLevelName}</a>
 				</div>
 				<div class="mt-2">
 					<a href="${detailUrl}" class="mt-2 text-gray-600 block">

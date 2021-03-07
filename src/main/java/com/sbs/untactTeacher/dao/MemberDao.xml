@@ -84,13 +84,14 @@
 		<if test="searchKeywordType == 'loginId'">
 			AND M.loginId LIKE CONCAT('%', #{searchKeyword}, '%')
 		</if>
+		<if test="authLevel != null and authLevel != ''">
+			AND M.authLevel = #{authLevel}
+		</if>
 		ORDER BY M.id DESC
 		<if test="limitStart != null and limitTake != null">
 			LIMIT #{limitStart}, #{limitTake}
 		</if>
 	</select>
-
-
 
 </mapper>
 

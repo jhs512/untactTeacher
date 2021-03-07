@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.sbs.untactTeacher.dto.Article;
 import com.sbs.untactTeacher.dto.Member;
 
 @Mapper
@@ -21,6 +20,5 @@ public interface MemberDao {
 
 	Member getMemberByAuthKey(@Param("authKey") String authKey);
 
-	List<Member> getForPrintMembers(@Param("searchKeywordType") String searchKeywordType, @Param("searchKeyword") String searchKeyword,
-			@Param("limitStart") int limitStart, @Param("limitTake") int limitTake);
+	List<Member> getForPrintMembers(Map<String, Object> param);
 }
