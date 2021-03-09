@@ -10,15 +10,5 @@ import com.sbs.untactTeacher.util.Util;
 
 @Controller
 public class UsrHomeController {
-	@RequestMapping("/usr/home/main")
-	@ResponseBody
-	public String showMain() {
-		return "ㅋㅋㅋ";
-	}
-	
-	@RequestMapping("/usr/home/doFormTest")
-	@ResponseBody
-	public Map<String, Object> doFormTest(String name, int age) {
-		return Util.mapOf("name", name, "age", age);
-	}
+
 }

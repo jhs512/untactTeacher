@@ -6,7 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.untactTeacher.dto.Article;
@@ -23,7 +24,7 @@ public class UsrReplyController {
 	@Autowired
 	private ArticleService articleService;
 
-	@RequestMapping("/usr/reply/list")
+	@GetMapping("/usr/reply/list")
 	@ResponseBody
 	public ResultData showList(String relTypeCode, Integer relId) {
 		
@@ -48,7 +49,7 @@ public class UsrReplyController {
 		return new ResultData("S-1", "성공", "replies", replies);
 	}
 
-	@RequestMapping("/usr/reply/doDelete")
+	@PostMapping("/usr/reply/doDelete")
 	@ResponseBody
 	public ResultData doDelete(Integer id, HttpServletRequest req) {
 		Member loginedMember = (Member)req.getAttribute("loginedMember");
@@ -72,7 +73,7 @@ public class UsrReplyController {
 		return replyService.deleteReply(id);
 	}
 	
-	@RequestMapping("/usr/reply/doModify")
+	@PostMapping("/usr/reply/doModify")
 	@ResponseBody
 	public ResultData doModify(Integer id, String body, HttpServletRequest req) {
 		Member loginedMember = (Member)req.getAttribute("loginedMember");
