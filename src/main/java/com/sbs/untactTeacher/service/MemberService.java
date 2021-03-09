@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sbs.untactTeacher.dao.MemberDao;
+import com.sbs.untactTeacher.dto.GenFile;
 import com.sbs.untactTeacher.dto.Member;
 import com.sbs.untactTeacher.dto.ResultData;
 import com.sbs.untactTeacher.util.Util;
@@ -17,11 +18,11 @@ public class MemberService {
 	private MemberDao memberDao;
 	@Autowired
 	private GenFileService genFileService;
-	
+
 	// static 시작
-	
+
 	public static String getAuthLevelName(Member member) {
-		switch ( member.getAuthLevel() ) {
+		switch (member.getAuthLevel()) {
 		case 7:
 			return "관리자";
 		case 3:
@@ -30,9 +31,9 @@ public class MemberService {
 			return "유형정보없음";
 		}
 	}
-	
+
 	public static String getAuthLevelNameColor(Member member) {
-		switch ( member.getAuthLevel() ) {
+		switch (member.getAuthLevel()) {
 		case 7:
 			return "red";
 		case 3:
@@ -41,14 +42,14 @@ public class MemberService {
 			return "";
 		}
 	}
-	
+
 	// static 끝
 
 	public ResultData join(Map<String, Object> param) {
 		memberDao.join(param);
 
 		int id = Util.getAsInt(param.get("id"), 0);
-		
+
 		genFileService.changeInputFileRelIds(param, id);
 
 		return new ResultData("S-1", String.format("%s님 환영합니다.", param.get("nickname")), "id", id);
@@ -76,20 +77,46 @@ public class MemberService {
 		return memberDao.getMemberByAuthKey(authKey);
 	}
 
-	public List<Member> getForPrintMembers(String searchKeywordType, String searchKeyword, int page, int itemsInAPage, Map<String, Object> param) {
+	public List<Member> getForPrintMembers(String searchKeywordType, String searchKeyword, int page, int itemsInAPage,
+			Map<String, Object> param) {
 		int limitStart = (page - 1) * itemsInAPage;
 		int limitTake = itemsInAPage;
-		
+
 		param.put("searchKeywordType", searchKeywordType);
 		param.put("searchKeyword", searchKeyword);
 		param.put("limitStart", limitStart);
 		param.put("limitTake", limitTake);
-		
+
 		return memberDao.getForPrintMembers(param);
 	}
 
 	public Member getForPrintMember(int id) {
 		return memberDao.getForPrintMember(id);
+	}
+
+	public Member getForPrintMemberByAuthKey(String authKey) {
+		Member member = memberDao.getMemberByAuthKey(authKey);
+
+		updateForPrint(member);
+
+		return member;
+	}
+
+	private void updateForPrint(Member member) {
+		GenFile genFile = genFileService.getGenFile("member", member.getId(), "common", "attachment", 1);
+
+		if (genFile != null) {
+			String imgUrl = genFile.getForPrintUrl();
+			member.setExtra__thumbImg(imgUrl);
+		}
+	}
+
+	public Member getForPrintMemberByLoginId(String loginId) {
+		Member member = memberDao.getMemberByLoginId(loginId);
+
+		updateForPrint(member);
+
+		return member;
 	}
 
 }
