@@ -5,6 +5,39 @@
 
 <script>
 	const JoinForm__checkAndSubmitDone = false;
+
+	// 로그인 아이디 중복체크 함수
+	function JoinForm__checkLoginIdDup(obj) {
+		const form = $(obj).closest('form').get(0);
+
+		form.loginId.value = form.loginId.value.trim();
+
+		if (form.loginId.value.length == 0) {
+			alert('로그인아이디를 입력해주세요.');
+			form.loginId.focus();
+
+			return;
+		}
+
+		$.get(
+			'getLoginIdDup',
+			{
+				loginId:form.loginId.value
+			},
+			function(data) {
+				alert(data.msg);
+
+				if ( data.fail ) {
+					form.loginId.focus();
+				}
+				else {
+					form.loginPw.focus();
+				}
+			},
+			'json'
+		);
+	}
+	
 	function JoinForm__checkAndSubmit(form) {
 		if (JoinForm__checkAndSubmitDone) {
 			return;
@@ -107,6 +140,11 @@
 							class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
 							autofocus="autofocus" type="text" placeholder="로그인 아이디를 입력해주세요."
 							name="loginId" maxlength="20" />
+						<div class="loginIdInputMsg"></div>
+						<input
+							onclick="JoinForm__checkLoginIdDup(this);"
+							class="btn-primary mt-2 bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded"
+							type="button" value="체크" />
 					</div>
 				</div>
 				<div class="flex flex-col mb-4 md:flex-row">
