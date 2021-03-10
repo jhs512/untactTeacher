@@ -3,21 +3,20 @@
 
 <%@ include file="../part/head.jspf"%>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+
 <script>
 	const JoinForm__checkAndSubmitDone = false;
 
 	let JoinForm__validLoginId = '';
 
 	// 로그인 아이디 중복체크 함수
-	function JoinForm__checkLoginIdDup(obj) {
-		const form = $(obj).closest('form').get(0);
+	function JoinForm__checkLoginIdDup() {
+		const form = $('.formLogin').get(0);
 
 		form.loginId.value = form.loginId.value.trim();
 
 		if (form.loginId.value.length == 0) {
-			alert('로그인아이디를 입력해주세요.');
-			form.loginId.focus();
-
 			return;
 		}
 
@@ -37,10 +36,6 @@
 
 				if ( data.fail ) {
 					form.loginId.focus();
-				}
-				else {
-					JoinForm__validLoginId = data.body.loginId;
-					form.loginPw.focus();
 				}
 			},
 			'json'
@@ -63,7 +58,7 @@
 
 		if ( form.loginId.value != JoinForm__validLoginId ) {
 			alert('로그인아이디 중복체크를해주세요.');
-			$('.btnCheckLoginIdDup').focus();
+			form.loginId.focus();
 
 			return;
 		}
@@ -130,6 +125,14 @@
 		form.submit();
 		JoinForm__checkAndSubmitDone = true;
 	}
+
+	$(function() {
+		$('.inputLoginId').change(function() {
+			JoinForm__checkLoginIdDup();
+		});
+
+		$('.inputLoginId').keyup(_.debounce(JoinForm__checkLoginIdDup, 1000));
+	});
 </script>
 <section class="section-login">
 	<div
@@ -143,7 +146,7 @@
 					<span>UNTACT ADMIN</span>
 				</a>
 			</div>
-			<form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mt-4"
+			<form class="formLogin bg-white shadow-md rounded px-8 pt-6 pb-8 mt-4"
 				action="doJoin" method="POST"
 				onsubmit="JoinForm__checkAndSubmit(this); return false;">
 				<input type="hidden" name="redirectUrl" value="${param.redirectUrl}" />
@@ -153,14 +156,10 @@
 					</div>
 					<div class="p-1 md:flex-grow">
 						<input
-							class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+							class="inputLoginId shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
 							autofocus="autofocus" type="text" placeholder="로그인 아이디를 입력해주세요."
 							name="loginId" maxlength="20" />
 						<div class="loginIdInputMsg"></div>
-						<input
-							onclick="JoinForm__checkLoginIdDup(this);"
-							class="btnCheckLoginIdDup btn-primary mt-2 bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded"
-							type="button" value="체크" />
 					</div>
 				</div>
 				<div class="flex flex-col mb-4 md:flex-row">
