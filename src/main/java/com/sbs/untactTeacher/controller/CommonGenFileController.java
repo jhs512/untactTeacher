@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartRequest;
 
 import com.sbs.untactTeacher.dto.GenFile;
 import com.sbs.untactTeacher.dto.ResultData;
+import com.sbs.untactTeacher.exceptions.GenFileNotFoundException;
 import com.sbs.untactTeacher.service.GenFileService;
 
 @Controller
