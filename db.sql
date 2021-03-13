@@ -212,3 +212,15 @@ DEFAULT 3 NOT NULL COMMENT '(3=일반,7=관리자)' AFTER `loginPw`;
 UPDATE `member`
 SET authLevel = 7
 WHERE id = 1;
+
+/*
+INSERT INTO article
+(regDate, updateDate, memberId, title, `body`, boardId)
+SELECT NOW(),
+NOW(),
+FLOOR(RAND() * 2) + 1,
+CONCAT('제목_', FLOOR(RAND() * 1000) + 1),
+CONCAT('내용_', FLOOR(RAND() * 1000) + 1),
+FLOOR(RAND() * 2) + 1
+FROM article;
+*/
