@@ -80,12 +80,16 @@ public class AdmArticleController extends BaseController {
 		int totalItemsCount = articleService.getArticlesTotalCount(boardId, searchKeywordType, searchKeyword);
 
 		int itemsInAPage = 20;
+		
+		int totalPage = (int)Math.ceil(totalItemsCount / (double)itemsInAPage);
 
 		List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword, page,
 				itemsInAPage);
 
 		req.setAttribute("totalItemsCount", totalItemsCount);
 		req.setAttribute("articles", articles);
+		req.setAttribute("page", page);
+		req.setAttribute("totalPage", totalPage);
 
 		return "adm/article/list";
 	}
