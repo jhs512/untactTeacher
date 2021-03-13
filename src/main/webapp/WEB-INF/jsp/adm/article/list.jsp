@@ -30,6 +30,16 @@
 
 		<div>총 게시물 수 : ${Util.numberFormat(totalItemsCount)}</div>
 
+		<form class="flex mt-3">
+			<select name="searchKeywordType">
+				<option value="titleAndBody">전체</option>
+				<option value="title">제목</option>
+				<option value="body">본문</option>
+			</select>
+			<input class="ml-3 shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker" name="searchKeyword" type="text" placeholder="검색어를 입력해주세요." value="${param.searchKeyword}" />
+			<input class="ml-3 btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" type="submit" value="검색" />
+		</form>
+
 		<div>
 			<c:forEach items="${articles}" var="article">
 				<c:set var="detailUrl" value="detail?id=${article.id}" />
@@ -67,7 +77,7 @@
 		</div>
 
 		<nav class="flex justify-center rounded-md shadow-sm mt-3" aria-label="Pagination">
-			<a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+			<a href="?page=1" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
 				<span class="sr-only">Previous</span>
 
 				<svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -75,8 +85,7 @@
 				</svg>
 			</a>
 
-
-			<c:forEach var="i" begin="1" end="${totalPage}">
+			<c:forEach var="i" begin="${pageMenuStart}" end="${pageMenuEnd}">
 				<c:set var="aClassStr" value="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium" />
 				<c:if test="${i == page}">
 					<c:set var="aClassStr" value="${aClassStr} text-red-700 hover:bg-red-50" />
@@ -87,7 +96,7 @@
 				<a href="?page=${i}" class="${aClassStr}">${i}</a>
 			</c:forEach>
 
-			<a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+			<a href="?page=${totalPage}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
 
 				<span class="sr-only">Next</span>
 
