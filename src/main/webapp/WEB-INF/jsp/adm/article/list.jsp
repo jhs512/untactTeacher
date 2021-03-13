@@ -36,6 +36,11 @@
 				<option value="title">제목</option>
 				<option value="body">본문</option>
 			</select>
+			<script>
+				if ( param.searchKeywordType ) {
+					$('.section-1 select[name="searchKeywordType"]').val(param.searchKeywordType);
+				}
+			</script>
 			<input class="ml-3 shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker" name="searchKeyword" type="text" placeholder="검색어를 입력해주세요." value="${param.searchKeyword}" />
 			<input class="ml-3 btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" type="submit" value="검색" />
 		</form>
@@ -76,14 +81,17 @@
 			</c:forEach>
 		</div>
 
-		<nav class="flex justify-center rounded-md shadow-sm mt-3" aria-label="Pagination">
-			<a href="?page=1" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-				<span class="sr-only">Previous</span>
-
-				<svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-					<path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-				</svg>
-			</a>
+		<c:set var="pageBtnAddiQueryStr" value="&searchKeywordType=${param.searchKeywordType}&searchKeyword=${param.searchKeyword}" />
+		<nav class="flex justify-center rounded-md mt-3" aria-label="Pagination">
+			<c:if test="${pageMenuStart != 1}">
+				<a href="?page=1${pageBtnAddiQueryStr}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+					<span class="sr-only">Previous</span>
+	
+					<svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+						<path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+					</svg>
+				</a>
+			</c:if>
 
 			<c:forEach var="i" begin="${pageMenuStart}" end="${pageMenuEnd}">
 				<c:set var="aClassStr" value="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium" />
@@ -93,17 +101,19 @@
 				<c:if test="${i != page}">
 					<c:set var="aClassStr" value="${aClassStr} text-gray-700 hover:bg-gray-50" />
 				</c:if>
-				<a href="?page=${i}" class="${aClassStr}">${i}</a>
+				<a href="?page=${i}${pageBtnAddiQueryStr}" class="${aClassStr}">${i}</a>
 			</c:forEach>
 
-			<a href="?page=${totalPage}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-
-				<span class="sr-only">Next</span>
-
-				<svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"> 
-					<path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-          		</svg>
-			</a>
+			<c:if test="${pageMenuEnd != totalPage}">
+				<a href="?page=${totalPage}${pageBtnAddiQueryStr}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+	
+					<span class="sr-only">Next</span>
+	
+					<svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"> 
+						<path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+	          		</svg>
+				</a>
+			</c:if>
 		</nav>
 	</div>
 </section>

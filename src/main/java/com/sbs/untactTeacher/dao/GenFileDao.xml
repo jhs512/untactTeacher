@@ -57,7 +57,8 @@
 		FROM genFile
 		WHERE 1
 		AND relTypeCode = #{relTypeCode}
-		AND relId = #{relId}
+		AND relId =
+		#{relId}
 		<if test="typeCode != null">
 			AND typeCode = #{typeCode}
 		</if>
@@ -66,8 +67,9 @@
 		</if>
 		ORDER BY typeCode, type2Code, fileNo
 	</select>
-	
-	<select id="getGenFilesByRelTypeCodeAndRelId" resultType="GenFile">
+
+	<select id="getGenFilesByRelTypeCodeAndRelId"
+		resultType="GenFile">
 		SELECT *
 		FROM genFile
 		WHERE 1
@@ -82,14 +84,17 @@
 		SELECT *
 		FROM genFile
 		WHERE 1
-		AND relId IN
-		<foreach item="relId" index="index" collection="relIds"
-			open="(" separator="," close=")">
-			#{relId}
-		</foreach>
+		<if test="relIds != null and relIds.size > 0">
+			AND relId IN
+			<foreach item="relId" index="index" collection="relIds"
+				open="(" separator="," close=")">
+				#{relId}
+			</foreach>
+		</if>
 		AND relTypeCode = #{relTypeCode}
 		AND typeCode = #{typeCode}
-		AND type2Code = #{type2Code}
+		AND
+		type2Code = #{type2Code}
 		ORDER BY relId, fileNo
 	</select>
 
