@@ -298,4 +298,48 @@ public class Util {
 		// _, 알파벳, 숫자로만 구성
 		return Pattern.matches("^[a-zA-Z]{1}[a-zA-Z0-9_]{4,19}$", str);
 	}
+	
+	public static String getNewUrlRemoved(String uri, String paramName) {
+		String deleteStrStarts = paramName + "=";
+		int delStartPos = uri.indexOf(deleteStrStarts);
+
+		if (delStartPos != -1) {
+			int delEndPos = uri.indexOf("&", delStartPos);
+
+			if (delEndPos != -1) {
+				delEndPos++;
+				uri = uri.substring(0, delStartPos) + uri.substring(delEndPos, uri.length());
+			} else {
+				uri = uri.substring(0, delStartPos);
+			}
+		}
+
+		if (uri.charAt(uri.length() - 1) == '?') {
+			uri = uri.substring(0, uri.length() - 1);
+		}
+
+		if (uri.charAt(uri.length() - 1) == '&') {
+			uri = uri.substring(0, uri.length() - 1);
+		}
+
+		return uri;
+	}
+
+	public static String getNewUrl(String uri, String paramName, String paramValue) {
+		uri = getNewUrlRemoved(uri, paramName);
+
+		if (uri.contains("?")) {
+			uri += "&" + paramName + "=" + paramValue;
+		} else {
+			uri += "?" + paramName + "=" + paramValue;
+		}
+
+		uri = uri.replace("?&", "?");
+
+		return uri;
+	}
+
+	public static String getNewUriAndEncoded(String uri, String paramName, String pramValue) {
+		return getUrlEncoded(getNewUrl(uri, paramName, pramValue));
+	}
 }
