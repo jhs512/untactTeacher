@@ -1,5 +1,6 @@
 package com.sbs.untactTeacher.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sbs.untactTeacher.dto.GenFile;
 import com.sbs.untactTeacher.dto.Member;
 import com.sbs.untactTeacher.dto.ResultData;
+import com.sbs.untactTeacher.service.GenFileService;
 import com.sbs.untactTeacher.service.MemberService;
 import com.sbs.untactTeacher.util.Util;
 
@@ -22,6 +25,8 @@ import com.sbs.untactTeacher.util.Util;
 public class AdmMemberController extends BaseController {
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+	private GenFileService genFileService;
 
 	@GetMapping("/adm/member/getLoginIdDup")
 	@ResponseBody
@@ -186,6 +191,15 @@ public class AdmMemberController extends BaseController {
 		}
 
 		Member member = memberService.getForPrintMember(id);
+		
+		List<GenFile> files = genFileService.getGenFiles("member", member.getId(), "common", "attachment");
+		Map<String, GenFile> filesMap = new HashMap<>();
+
+		for (GenFile file : files) {
+			filesMap.put(file.getFileNo() + "", file);
+		}
+
+		member.getExtraNotNull().put("file__common__attachment", filesMap);
 
 		req.setAttribute("member", member);
 
@@ -198,15 +212,13 @@ public class AdmMemberController extends BaseController {
 
 	@RequestMapping("/adm/member/doModify")
 	@ResponseBody
-	public ResultData doModify(@RequestParam Map<String, Object> param, HttpServletRequest req) {
-		if (param.isEmpty()) {
-			return new ResultData("F-2", "수정할 정보를 입력해주세요.");
-		}
-
+	public String doModify(@RequestParam Map<String, Object> param, HttpServletRequest req) {
 		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
 		param.put("id", loginedMemberId);
 
-		return memberService.modifyMember(param);
+		ResultData modifyMemberRd = memberService.modifyMember(param);
+		String redirectUrl = "/adm/member/list";
+		return Util.msgAndReplace(modifyMemberRd.getMsg(), redirectUrl);
 	}
 
 	@RequestMapping("/adm/member/doLogout")
