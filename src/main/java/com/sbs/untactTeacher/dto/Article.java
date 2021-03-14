@@ -32,4 +32,8 @@ public class Article {
 		
 		return extra;
 	}
+	
+	public String getWriterThumbImgUrl() {
+		return "/common/genFile/file/member/" + memberId + "/common/attachment/1";
+	}
 }

@@ -30,19 +30,29 @@ public class AdmArticleController extends BaseController {
 	private GenFileService genFileService;
 
 	@RequestMapping("/adm/article/detail")
-	@ResponseBody
-	public ResultData showDetail(Integer id) {
+	public String showDetail(HttpServletRequest req, Integer id) {
 		if (id == null) {
-			return new ResultData("F-1", "id를 입력해주세요.");
+			return msgAndBack(req, "id를 입력해주세요.");
 		}
 
 		Article article = articleService.getForPrintArticle(id);
 
-		if (article == null) {
-			return new ResultData("F-2", "존재하지 않는 게시물번호 입니다.");
+		List<GenFile> files = genFileService.getGenFiles("article", article.getId(), "common", "attachment");
+
+		Map<String, GenFile> filesMap = new HashMap<>();
+
+		for (GenFile file : files) {
+			filesMap.put(file.getFileNo() + "", file);
 		}
 
-		return new ResultData("S-1", "성공", "article", article);
+		article.getExtraNotNull().put("file__common__attachment", filesMap);
+		req.setAttribute("article", article);
+
+		if (article == null) {
+			return msgAndBack(req, "존재하지 않는 게시물번호 입니다.");
+		}
+
+		return "adm/article/detail";
 	}
 
 	@RequestMapping("/adm/article/list")
@@ -76,18 +86,18 @@ public class AdmArticleController extends BaseController {
 		if (searchKeyword == null) {
 			searchKeywordType = null;
 		}
-		
+
 		int totalItemsCount = articleService.getArticlesTotalCount(boardId, searchKeywordType, searchKeyword);
 
 		int itemsInAPage = 20;
-		int totalPage = (int)Math.ceil(totalItemsCount / (double)itemsInAPage);
+		int totalPage = (int) Math.ceil(totalItemsCount / (double) itemsInAPage);
 		int pageMenuArmSize = 10;
 		int pageMenuStart = page - pageMenuArmSize;
-		
+
 		if (pageMenuStart < 1) {
 			pageMenuStart = 1;
 		}
-		
+
 		int pageMenuEnd = page + pageMenuArmSize;
 		if (pageMenuEnd > totalPage) {
 			pageMenuEnd = totalPage;
@@ -207,18 +217,18 @@ public class AdmArticleController extends BaseController {
 	@ResponseBody
 	public ResultData doModify(@RequestParam Map<String, Object> param, HttpServletRequest req) {
 		Member loginedMember = (Member) req.getAttribute("loginedMember");
-		
+
 		int id = Util.getAsInt(param.get("id"), 0);
 
-		if ( id == 0 ) {
+		if (id == 0) {
 			return new ResultData("F-1", "id를 입력해주세요.");
 		}
 
-		if ( Util.isEmpty(param.get("title")) ) {
+		if (Util.isEmpty(param.get("title"))) {
 			return new ResultData("F-1", "title을 입력해주세요.");
 		}
 
-		if ( Util.isEmpty(param.get("body")) ) {
+		if (Util.isEmpty(param.get("body"))) {
 			return new ResultData("F-1", "body를 입력해주세요.");
 		}
 
