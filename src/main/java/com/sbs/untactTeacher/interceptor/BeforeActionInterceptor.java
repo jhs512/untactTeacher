@@ -14,7 +14,10 @@ import com.sbs.untactTeacher.dto.Member;
 import com.sbs.untactTeacher.service.MemberService;
 import com.sbs.untactTeacher.util.Util;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component("beforeActionInterceptor") // 컴포넌트 이름 설정
+@Slf4j
 public class BeforeActionInterceptor implements HandlerInterceptor {
 	@Autowired
 	private MemberService memberService;
@@ -22,8 +25,7 @@ public class BeforeActionInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		
-		
+
 		// 기타 유용한 정보를 request에 담는다.
 		Map<String, Object> param = Util.getParamMap(request);
 		String paramJson = Util.toJsonStr(param);
@@ -35,17 +37,66 @@ public class BeforeActionInterceptor implements HandlerInterceptor {
 			requestUrl += "?" + queryString;
 		}
 
+		String[] pathBits = request.getRequestURI().split("/");
+
+		String controllerTypeCode = "usr";
+		String controllerSubject = "home";
+		String controllerActName = "main";
+
+		if (pathBits.length > 1) {
+			controllerTypeCode = pathBits[1];
+		}
+
+		if (pathBits.length > 2) {
+			controllerSubject = pathBits[2];
+		}
+
+		if (pathBits.length > 3) {
+			controllerActName = pathBits[3];
+		}
+
+		request.setAttribute("controllerTypeCode", controllerTypeCode);
+		request.setAttribute("controllerSubject", controllerSubject);
+		request.setAttribute("controllerActName", controllerActName);
+
+		log.debug("controllerTypeCode : " + controllerTypeCode);
+		log.debug("controllerSubject : " + controllerSubject);
+		log.debug("controllerActName : " + controllerActName);
+
+		boolean isAjax = false;
+		
+		String isAjaxParameter = request.getParameter("isAjax");
+		
+		if ( isAjaxParameter == null  ) {
+			if ( controllerActName.startsWith("get") ) {
+				isAjax = true;
+			}
+			else if ( controllerTypeCode.equals("usr") ) {
+				isAjax = true;
+			}
+		}
+		else if ( isAjaxParameter.equals("Y") ) {
+			isAjax = true;
+		}
+
+		if (isAjax == false && request.getParameter("isAjax") != null && request.getParameter("isAjax").equals("Y")) {
+			isAjax = true;
+		}
+
+		request.setAttribute("isAjax", isAjax);
+		
+		log.debug("isAjax : " + isAjax);
+
 		String encodedRequestUrl = Util.getUrlEncoded(requestUrl);
 
 		request.setAttribute("requestUrl", requestUrl);
 		request.setAttribute("encodedRequestUrl", encodedRequestUrl);
-		
+
 		request.setAttribute("afterLoginUrl", requestUrl);
 		request.setAttribute("encodedAfterLoginUrl", encodedRequestUrl);
-		
+
 		request.setAttribute("paramMap", param);
 		request.setAttribute("paramJson", paramJson);
-		
 
 		int loginedMemberId = 0;
 		Member loginedMember = null;
@@ -70,7 +121,7 @@ public class BeforeActionInterceptor implements HandlerInterceptor {
 				loginedMember = memberService.getMember(loginedMemberId);
 			}
 		}
-		
+
 		// 로그인 여부에 관련된 정보를 request에 담는다.
 		boolean isLogined = false;
 		boolean isAdmin = false;

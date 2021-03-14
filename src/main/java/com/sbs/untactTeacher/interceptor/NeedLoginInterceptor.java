@@ -6,7 +6,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component("needLoginInterceptor") // 컴포넌트 이름 설정
+@Slf4j
 public class NeedLoginInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -18,8 +21,8 @@ public class NeedLoginInterceptor implements HandlerInterceptor {
 
 		// 이 인터셉터 실행 전에 beforeActionInterceptor 가 실행되고 거기서 isAjax 라는 속성 생성
 		// 그래서 여기서 단순히 request.getAttribute("isAjax"); 이것만으로 해당 요청이 ajax인지 구분 가능
-		boolean isAjax = true;
-
+		boolean isAjax = (boolean) request.getAttribute("isAjax");
+		
 		if (isLogined == false) {
 			String authKeyStatus = (String)request.getAttribute("authKeyStatus");
 			
